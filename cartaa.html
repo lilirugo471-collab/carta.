@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Invitación Especial</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    radial-gradient(circle at top, #7a0018 0%, #3a0008 50%, #150003 100%);
+    overflow:hidden;
+    font-family:"Times New Roman", serif;
+}
+
+.message{
+    position:absolute;
+    top:5%;
+    color:#f2d28a;
+    font-size:18px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    text-align:center;
+    animation:pulse 2s infinite;
+    z-index: 20;
+}
+
+@keyframes pulse{
+    0%{opacity:.5;}
+    50%{opacity:1;}
+    100%{opacity:.5;}
+}
+
+/* CONTENEDOR VERTICAL: Ahora adaptado al largo de la carta */
+.container{
+    position:relative;
+    width:320px;
+    height:440px; /* Alto similar al de la invitación */
+    cursor:pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* SOBRE VERTICAL */
+.envelope{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(
+        135deg,
+        #5a0011,
+        #7b0017,
+        #4a000d
+    );
+    border:2px solid #d8b26a;
+    border-radius: 6px;
+    box-shadow:
+    0 0 30px rgba(0,0,0,.5),
+    0 0 15px rgba(216,178,106,.2);
+    z-index: 3;
+}
+
+.envelope::before{
+    content:'';
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:
+    repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,.02),
+        rgba(255,255,255,.02) 2px,
+        transparent 2px,
+        transparent 4px
+    );
+    border-radius: 6px;
+}
+
+/* SOLAPA VERTICAL: Ajustada para cubrir la parte superior del sobre largo */
+.flap{
+    position:absolute;
+    top:0;
+    left:0;
+    width:0;
+    height:0;
+    border-left: 158px solid transparent;  /* Mitad del ancho del contenedor */
+    border-right: 158px solid transparent; /* Mitad del ancho del contenedor */
+    border-top: 160px solid #93001d;       /* Caída elegante hacia el centro */
+    transform-origin: top;
+    transition: transform 0.6s ease;
+    z-index: 5;
+}
+
+/* LA CARTA: Totalmente guardada dentro del sobre largo */
+.card{
+    position:absolute;
+    width: 300px; /* Ligeramente más delgada que el sobre para que "quepa" dentro */
+    height: auto;
+    background:white;
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+    
+    top: 10px;
+    z-index: 2; 
+    transform: translateY(0) scale(0.96);
+    
+    /* Retorno suave si se vuelve a cerrar */
+    transition: transform 0.8s ease-in-out, z-index 0s step-end 0.8s;
+}
+
+.card img{
+    width:100%;
+    display:block;
+}
+
+/* SELLO DORADO: Centrado en la punta de la nueva solapa vertical */
+.seal{
+    position:absolute;
+    width:70px;
+    height:70px;
+    background:
+    radial-gradient(circle,
+    #f5d38f 0%,
+    #d8b26a 60%,
+    #b4873d 100%);
+    border-radius:50%;
+    top:125px; /* Bajó un poco para coincidir con la punta de la solapa larga */
+    left:125px;
+    z-index: 6;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#6b0015;
+    font-size:22px;
+    font-weight:bold;
+
+    transition: 0.3s ease;
+    box-shadow:0 0 15px rgba(0,0,0,.4);
+}
+
+/* ==========================================
+   ANIMACIONES AL ABRIR (CLIC)
+   ========================================== */
+
+.open .seal{
+    opacity:0;
+    transform:scale(0.5);
+    pointer-events: none;
+}
+
+.open .flap{
+    transform:rotateX(180deg);
+    z-index: 1; 
+}
+
+.open .card{
+    z-index: 10;
+    /* Activa la animación para salir del sobre largo y ponerse al frente */
+    animation: sacarCartaLarga 1.8s forwards ease-in-out;
+    transition: none;
+}
+
+@keyframes sacarCartaLarga {
+    0% {
+        transform: translateY(0) scale(0.96);
+        z-index: 2;
+    }
+    50% {
+        /* Sube lo suficiente para salir por completo del sobre largo */
+        transform: translateY(-460px) scale(0.96);
+        z-index: 2;
+    }
+    51% {
+        /* Pasa mágicamente al frente */
+        z-index: 10;
+    }
+    100% {
+        /* Se coloca al frente cubriendo de manera estética el sobre */
+        transform: translateY(0) scale(1.02);
+        z-index: 10;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+}
+
+.sparkle{
+    position:absolute;
+    color:#f2d28a;
+    font-size:18px;
+    animation:float 5s infinite linear;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(30px);
+        opacity:0;
+    }
+    50%{
+        opacity:1;
+    }
+    to{
+        transform:translateY(-600px);
+        opacity:0;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="message">
+    Toque el sobre para abrir la invitación
+</div>
+
+<div class="container" onclick="abrirSobre(this)">
+
+    <div class="card">
+        <img src="1000268232.jpg" alt="Invitación de Cumpleaños">
+    </div>
+
+    <div class="envelope"></div>
+
+    <div class="flap"></div>
+
+    <div class="seal">
+        J&L
+    </div>
+
+</div>
+
+<script>
+
+function abrirSobre(elemento){
+    elemento.classList.toggle("open");
+}
+
+for(let i=0;i<20;i++){
+    let star=document.createElement("div");
+    star.className="sparkle";
+    star.innerHTML="✦";
+    star.style.left=Math.random()*100+"vw";
+    star.style.animationDelay=Math.random()*5+"s";
+    document.body.appendChild(star);
+}
+
+</script>
+
+</body>
+</html>
